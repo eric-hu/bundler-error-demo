@@ -188,7 +188,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
-  pg
+  pg (~> 0.18.4)
   rails (= 4.2.5.1)
   rspec-rails
   rspec_junit_formatter
