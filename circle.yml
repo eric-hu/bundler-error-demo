@@ -5,6 +5,7 @@ experimental:
     containerInfo:
       #- image: ruby:2.3.1
       - image: justincampbell/capybara-webkit:2.3
+        cmd: ["/bin/sleep", "500000"]
       #- image: postgres:9.4.1
         #env:
           #- POSTGRES_USER=root
