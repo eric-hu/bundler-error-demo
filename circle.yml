@@ -22,7 +22,7 @@ experimental:
             shell: /bin/bash
             command: |
               set -ex &&
-              sudo -u root createuser -h localhost --superuser ubuntu &&
+              #sudo -u root createuser -h localhost --superuser ubuntu &&
               rake db:create db:schema:load
           # Run tests, demonstrates using a larger script as the test command
           # along with additional environment variables
