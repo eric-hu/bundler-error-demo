@@ -5,7 +5,6 @@ experimental:
     containerInfo:
       #- image: ruby:2.3.1
       - image: ubuntu:14.04
-        user: ubuntu
       #- image: postgres:9.4.1
         #env:
           #- POSTGRES_USER=root
