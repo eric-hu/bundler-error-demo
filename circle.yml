@@ -21,21 +21,9 @@ experimental:
           - type: shell
             shell: /bin/bash
             command: |
-              set -ex
+              set -ex &&
               sudo -u root createuser -h localhost --superuser ubuntu &&
-              sudo createdb -h localhost test_db
-
-              mkdir -p config
-              echo 'test:
-                database: circle_ruby_test
-                adapter: postgresql
-                pool: 5
-                timeout: 5000
-                username: ubuntu
-                host: localhost
-              ' > config/database.yml
-
-              #rake db:create db:schema:load
+              rake db:create db:schema:load
           # Run tests, demonstrates using a larger script as the test command
           # along with additional environment variables
           #- type: shell
