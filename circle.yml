@@ -3,7 +3,8 @@ experimental:
     version: 0.1
     executorType: docker
     containerInfo:
-      - image: ruby:2.3.1
+      #- image: ruby:2.3.1
+      - image: justincampbell/capybara-webkit:2.3
       #- image: postgres:9.4.1
         #env:
           #- POSTGRES_USER=root
