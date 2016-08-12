@@ -3,11 +3,10 @@ experimental:
     version: 0.1
     executorType: docker
     containerInfo:
-      #- image: ruby:2.3.1
-      - image: ubuntu:14.04
-      #- image: postgres:9.4.1
-        #env:
-          #- POSTGRES_USER=root
+      - image: justincampbell/capybara-webkit:2.3
+      - image: postgres:9.4.1
+        env:
+          - POSTGRES_USER=root
     stages:
       build:
         workDir: /home/ubuntu/canary-rails
@@ -19,21 +18,21 @@ experimental:
             shell: /bin/bash
             command: |
               bundle install
-          #- type: shell
-            #shell: /bin/bash
-            #command: |
-              #sudo -u root createuser -h localhost --superuser ubuntu &&
-              #sudo createdb -h localhost test_db
+          - type: shell
+            shell: /bin/bash
+            command: |
+              sudo -u root createuser -h localhost --superuser ubuntu &&
+              sudo createdb -h localhost test_db
 
-              #mkdir -p config
-              #echo 'test:
-                #database: circle_ruby_test
-                #adapter: postgresql
-                #pool: 5
-                #timeout: 5000
-                #username: ubuntu
-                #host: localhost
-              #' > config/database.yml
+              mkdir -p config
+              echo 'test:
+                database: circle_ruby_test
+                adapter: postgresql
+                pool: 5
+                timeout: 5000
+                username: ubuntu
+                host: localhost
+              ' > config/database.yml
 
               #rake db:create db:schema:load
           # Run tests, demonstrates using a larger script as the test command
