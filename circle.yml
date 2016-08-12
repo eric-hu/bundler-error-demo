@@ -5,8 +5,6 @@ experimental:
     containerInfo:
       #- image: ruby:2.3.1
       - image: ubuntu:14.04
-        # specify cmd if image doesn't have a Command set already
-        cmd: ["/bin/sleep", "500000"]
         user: ubuntu
       #- image: postgres:9.4.1
         #env:
