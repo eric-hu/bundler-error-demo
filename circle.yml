@@ -3,13 +3,10 @@ experimental:
     version: 0.1
     executorType: docker
     containerInfo:
-      - image: ubuntu:14.04
-        # specify cmd if image doesn't have a Command set already
-        cmd: ["/bin/sleep", "500000"]
-        user: ubuntu
-      - image: postgres:9.4.1
-        env:
-          - POSTGRES_USER=root
+      - image: ruby:2.3.1
+      #- image: postgres:9.4.1
+        #env:
+          #- POSTGRES_USER=root
     stages:
       build:
         workDir: /home/ubuntu/canary-rails
@@ -21,36 +18,36 @@ experimental:
             shell: /bin/bash
             command: |
               bundle install
-          - type: shell
-            shell: /bin/bash
-            command: |
-              sudo -u root createuser -h localhost --superuser ubuntu &&
-              sudo createdb -h localhost test_db
+          #- type: shell
+            #shell: /bin/bash
+            #command: |
+              #sudo -u root createuser -h localhost --superuser ubuntu &&
+              #sudo createdb -h localhost test_db
 
-              mkdir -p config
-              echo 'test:
-                database: circle_ruby_test
-                adapter: postgresql
-                pool: 5
-                timeout: 5000
-                username: ubuntu
-                host: localhost
-              ' > config/database.yml
+              #mkdir -p config
+              #echo 'test:
+                #database: circle_ruby_test
+                #adapter: postgresql
+                #pool: 5
+                #timeout: 5000
+                #username: ubuntu
+                #host: localhost
+              #' > config/database.yml
 
-              rake db:create db:schema:load
+              #rake db:create db:schema:load
           # Run tests, demonstrates using a larger script as the test command
           # along with additional environment variables
-          - type: shell
-            shell: /bin/bash
-            command: |
-                set -exu
-                mkdir -p /tmp/artifacts
-                bundle exec rspec --require spec_helper --format RspecJunitFormatter --out out/tests/rspec.xml
-                cp out/tests/*.xml /tmp/artifacts/
+          #- type: shell
+            #shell: /bin/bash
+            #command: |
+                #set -exu
+                #mkdir -p /tmp/artifacts
+                #bundle exec rspec --require spec_helper --format RspecJunitFormatter --out out/tests/rspec.xml
+                #cp out/tests/*.xml /tmp/artifacts/
 
-            environment:
-              SSH_TARGET: "localhost"
-              TEST_ENV: "linux"
+            #environment:
+              #SSH_TARGET: "localhost"
+              #TEST_ENV: "linux"
 
           # Save artifacts
           #- type: artifacts-store
