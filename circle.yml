@@ -21,7 +21,7 @@ experimental:
           - type: shell
             shell: /bin/bash
             command: |
-              set -e
+              set -ex
               sudo -u root createuser -h localhost --superuser ubuntu &&
               sudo createdb -h localhost test_db
 
