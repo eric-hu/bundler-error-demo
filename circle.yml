@@ -12,7 +12,7 @@ experimental:
         workDir: /home/ubuntu/canary-rails
         environment:
           #RAILS_ENV: "test"
-          #RACK_ENV: "test"
+          RACK_ENV: "test"
           #DISPLAY: ":99"
         steps:
           - type: checkout
