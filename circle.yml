@@ -63,7 +63,7 @@ experimental:
 
           - type: shell
             command: |
-              rspec --color --require spec_helper --format RspecJunitFormatter --out /tmp/artifacts/rspec.xml --format progress
+              bundle exec rspec --color --require spec_helper --format RspecJunitFormatter --out /tmp/artifacts/rspec.xml --format progress
             #environment:
               #SSH_TARGET: "localhost"
               #TEST_ENV: "linux"
