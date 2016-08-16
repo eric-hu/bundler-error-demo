@@ -68,7 +68,7 @@ experimental:
               #SSH_TARGET: "localhost"
               #TEST_ENV: "linux"
 
-          # Save artifacts
-          #- type: artifacts-store
-            #path: /tmp/artifacts
-            #destination: build
+           Save artifacts
+          - type: artifacts-store
+            path: /tmp/artifacts
+            destination: build
