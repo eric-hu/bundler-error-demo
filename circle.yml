@@ -10,20 +10,47 @@ experimental:
     stages:
       build:
         workDir: /home/ubuntu/canary-rails
+        environment:
+          #RAILS_ENV: "test"
+          #RACK_ENV: "test"
+          #DISPLAY: ":99"
         steps:
           - type: checkout
+          #  Need to start Xvfb explicitly
+          #- type: shell
+            #command: Xvfb :99 -screen 0 1280x1024x24
+            #background: true
+            #name: Starting Xvfb
+
+          # should probably move into container image
+          - type: shell
+            command: |
+              apt-get update
+              apt-get install -y nodejs
+              gem install bundler
+              mkdir -p /tmp/artifacts
+
           # Create Postgres users and database, shows how to use a YAML heredoc
           # to provide nicer formatting
           - type: shell
             shell: /bin/bash
             command: |
               bundle install
+
           - type: shell
             shell: /bin/bash
             command: |
-              set -ex &&
               #sudo -u root createuser -h localhost --superuser ubuntu &&
+              echo 'test:
+                database: circle_ruby_test
+                adapter: postgresql
+                pool: 5
+                timeout: 5000
+                username: root
+                host: localhost
+              ' > config/database.yml
               rake db:create db:schema:load
+
           # Run tests, demonstrates using a larger script as the test command
           # along with additional environment variables
           #- type: shell
@@ -34,6 +61,9 @@ experimental:
                 #bundle exec rspec --require spec_helper --format RspecJunitFormatter --out out/tests/rspec.xml
                 #cp out/tests/*.xml /tmp/artifacts/
 
+          - type: shell
+            command: |
+              rspec --color --require spec_helper --format RspecJunitFormatter --out /tmp/artifacts/rspec.xml --format progress
             #environment:
               #SSH_TARGET: "localhost"
               #TEST_ENV: "linux"
