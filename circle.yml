@@ -13,7 +13,7 @@ experimental:
         environment:
           #RAILS_ENV: "test"
           RACK_ENV: "test"
-          #DISPLAY: ":99"
+          DISPLAY: ":99"
         steps:
           - type: checkout
           #  Need to start Xvfb explicitly
@@ -49,7 +49,7 @@ experimental:
                 username: root
                 host: localhost
               ' > config/database.yml
-              rake db:create db:schema:load
+              bundle exec rake db:create db:schema:load
 
           # Run tests, demonstrates using a larger script as the test command
           # along with additional environment variables
