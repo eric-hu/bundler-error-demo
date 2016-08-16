@@ -3,7 +3,7 @@ class WelcomeController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: 'welcome', template: nil
+        render pdf: 'welcome'
       end
     end
   end
