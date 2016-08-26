@@ -6,7 +6,7 @@ experimental:
       - image: justincampbell/capybara-webkit:2.3
       - image: postgres:9.4.1
         env:
-          - POSTGRES_USER=root
+          - POSTGRES_USER=ubuntu
     stages:
       build:
         workDir: /home/ubuntu/canary-rails
@@ -40,26 +40,15 @@ experimental:
           - type: shell
             shell: /bin/bash
             command: |
-              #sudo -u root createuser -h localhost --superuser ubuntu &&
               echo 'test:
                 database: circle_ruby_test
                 adapter: postgresql
                 pool: 5
                 timeout: 5000
-                username: root
+                username: ubuntu
                 host: localhost
-              ' > config/database.yml
+              ' > config/database.yml && \
               bundle exec rake db:create db:schema:load
-
-          # Run tests, demonstrates using a larger script as the test command
-          # along with additional environment variables
-          #- type: shell
-            #shell: /bin/bash
-            #command: |
-                #set -exu
-                #mkdir -p /tmp/artifacts
-                #bundle exec rspec --require spec_helper --format RspecJunitFormatter --out out/tests/rspec.xml
-                #cp out/tests/*.xml /tmp/artifacts/
 
           - type: shell
             command: |
