@@ -17,10 +17,10 @@ experimental:
         steps:
           - type: checkout
           #  Need to start Xvfb explicitly
-          - type: shell
-            command: Xvfb :99 -screen 0 1280x1024x24
-            background: true
-            name: Starting Xvfb
+          #- type: shell
+            #command: Xvfb :99 -screen 0 1280x1024x24
+            #background: true
+            #name: Starting Xvfb
 
           # should probably move into container image
           - type: shell
