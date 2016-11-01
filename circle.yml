@@ -12,11 +12,12 @@ experimental:
         workDir: /home/ubuntu/canary-rails
         environment:
           RACK_ENV: "test"
+          DISPLAY: ":99"
         steps:
           - type: checkout
           #  Need to start Xvfb explicitly for headless webkit integration tests
           - type: shell
-            command: DISPLAY=":99" Xvfb :99 -screen 0 1280x1024x24
+            command: Xvfb :99 -screen 0 1280x1024x24
             background: true
             name: Starting Xvfb (for Webkit)
 
