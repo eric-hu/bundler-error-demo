@@ -11,9 +11,7 @@ experimental:
       build:
         workDir: /home/ubuntu/canary-rails
         environment:
-          #RAILS_ENV: "test"
           RACK_ENV: "test"
-          DISPLAY: ":99"
         steps:
           - type: checkout
           #  Need to start Xvfb explicitly for headless webkit integration tests
