@@ -16,11 +16,11 @@ experimental:
           DISPLAY: ":99"
         steps:
           - type: checkout
-          #  Need to start Xvfb explicitly
-          #- type: shell
-            #command: Xvfb :99 -screen 0 1280x1024x24
-            #background: true
-            #name: Starting Xvfb
+          #  Need to start Xvfb explicitly for headless webkit integration tests
+          - type: shell
+            command: Xvfb :99 -screen 0 1280x1024x24
+            background: true
+            name: Starting Xvfb (for Webkit)
 
           # should probably move into container image
           - type: shell
