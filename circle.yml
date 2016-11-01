@@ -16,7 +16,7 @@ experimental:
           - type: checkout
           #  Need to start Xvfb explicitly for headless webkit integration tests
           - type: shell
-            command: Xvfb :99 -screen 0 1280x1024x24
+            command: DISPLAY=":99" Xvfb :99 -screen 0 1280x1024x24
             background: true
             name: Starting Xvfb (for Webkit)
 
