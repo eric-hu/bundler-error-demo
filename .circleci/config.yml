@@ -43,12 +43,14 @@ jobs:
     - run:
         command: |
           TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings )
+          echo TESTFILES: $TESTFILES
           bundle exec rspec --color \
                             --require spec_helper \
                             --format RspecJunitFormatter \
                             --out /tmp/artifacts/rspec.xml \
                             --format progress \
-                            -- \ # Rspec separator for flags and file list
+                             # Rspec separator for flags and file list
+                            -- \
                             $TESTFILES
     - store_test_results:
         path: /tmp/artifacts
