@@ -23,7 +23,7 @@ jobs:
           apt-get update
           apt-get install -y nodejs
           gem install bundler
-          mkdir -p /tmp/artifacts
+          mkdir -p /tmp/artifacts/test_results
     - run:
         command: |
           bundle install
@@ -48,12 +48,12 @@ jobs:
           bundle exec rspec --color \
                             --require spec_helper \
                             --format RspecJunitFormatter \
-                            --out /tmp/artifacts/rspec.xml \
+                            --out /tmp/artifacts/test_results/rspec.xml \
                             --format progress \
                             -- \
                             $TESTFILES
-          echo "contents" > /tmp/artifacts/some_file
-          echo "<foo/>" > /tmp/artifacts/some_xml_file.xml
+          echo "contents" > /tmp/artifacts/test_results/some_file
+          echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
     - store_test_results:
         path: /tmp/artifacts
     - store_artifacts:
