@@ -1,0 +1,51 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: justincampbell/capybara-webkit:2.3
+    - environment:
+      - POSTGRES_USER=ubuntu
+      image: postgres:9.4.1
+    environment:
+      DISPLAY: :99
+      RACK_ENV: test
+    executor: docker
+    working_directory: /home/ubuntu/canary-rails
+    steps:
+    - checkout: {}
+    - run:
+        background: true
+        command: Xvfb :99 -screen 0 1280x1024x24
+        name: Starting Xvfb (for Webkit)
+    - run:
+        command: |
+          apt-get update
+          apt-get install -y nodejs
+          gem install bundler
+          mkdir -p /tmp/artifacts
+    - run:
+        command: |
+          bundle install
+        shell: /bin/bash
+    - run:
+        command: |
+          echo 'test:
+            database: circle_ruby_test
+            adapter: postgresql
+            pool: 5
+            timeout: 5000
+            username: ubuntu
+            host: localhost
+          ' > config/database.yml && \
+          bundle exec rake db:create db:schema:load
+        shell: /bin/bash
+    - run:
+        command: |
+          bundle exec rspec --color \
+                            --require spec_helper \
+                            --format RspecJunitFormatter \
+                            --out /tmp/artifacts/rspec.xml \
+                            --format progress
+    - store_artifacts:
+        destination: build
+        path: /tmp/artifacts
