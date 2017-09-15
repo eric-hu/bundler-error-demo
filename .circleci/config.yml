@@ -52,8 +52,8 @@ jobs:
                             --format progress \
                             -- \
                             $TESTFILES
-          touch /tmp/artifacts/some_file
-          touch /tmp/artifacts/some_xml_file.xml
+          echo "contents" > /tmp/artifacts/some_file
+          echo "<foo/>" > /tmp/artifacts/some_xml_file.xml
     - store_test_results:
         path: /tmp/artifacts
     - store_artifacts:
