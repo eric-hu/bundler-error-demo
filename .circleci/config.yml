@@ -23,8 +23,9 @@ jobs:
     - run:
         name: "install old bundler: workaround bundler 1.16.0 bug"
         command: |
-          gem uninstall -x -i /usr/local/lib/ruby/gems/2.4.0 bundler
-          gem install bundler --version 1.15.4
+          sudo gem uninstall -x bundler
+          #sudo gem uninstall -x -i /usr/local/lib/ruby/gems/2.4.0 bundler
+          sudo gem install bundler --version 1.15.4
     - run: |
         bundle install --path=vendor/bundle
     - run: |
