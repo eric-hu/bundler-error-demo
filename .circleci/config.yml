@@ -11,7 +11,7 @@ jobs:
       DISPLAY: :99
       RACK_ENV: test
     executor: docker
-    working_directory: /home/ubuntu/canary-rails
+    working_directory: ~/canary-rails
     parallelism: 2
     steps:
     - checkout: {}
