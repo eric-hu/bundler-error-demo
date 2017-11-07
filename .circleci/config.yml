@@ -45,6 +45,9 @@ jobs:
                           $TESTFILES
         echo "contents" > /tmp/artifacts/test_results/some_file
         echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
+    - run:
+        command: bundle exec rails test
+        name: run a simple rails test (minitest)
     - store_test_results:
         path: /tmp/artifacts
     - store_artifacts:
