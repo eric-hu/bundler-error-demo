@@ -15,43 +15,37 @@ jobs:
     parallelism: 2
     steps:
     - checkout: {}
-    - run:
-        command: |
-          sudo apt-get update
-          sudo apt-get install -y qt5-default libqt5webkit5-dev \
-            gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
-          gem install bundler
-          mkdir -p /tmp/artifacts/test_results
-    - run:
-        command: |
-          bundle install --path=vendor/bundle
-        shell: /bin/bash
-    - run:
-        command: |
-          echo 'test:
-            database: circle_ruby_test
-            adapter: postgresql
-            pool: 5
-            timeout: 5000
-            username: ubuntu
-            host: localhost
-          ' > config/database.yml && \
-          bundle exec rake db:create db:schema:load
-        shell: /bin/bash
-    - run:
-        command: |
-          TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings )
-          echo TESTFILES: $TESTFILES
-          # "--" is the Rspec separator between flags and the file list
-          bundle exec rspec --color \
-                            --require spec_helper \
-                            --format RspecJunitFormatter \
-                            --out /tmp/artifacts/test_results/rspec.xml \
-                            --format progress \
-                            -- \
-                            $TESTFILES
-          echo "contents" > /tmp/artifacts/test_results/some_file
-          echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
+    - run: |
+        sudo apt-get update
+        sudo apt-get install -y qt5-default libqt5webkit5-dev \
+          gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+        gem install bundler
+        mkdir -p /tmp/artifacts/test_results
+    - run: |
+        bundle install --path=vendor/bundle
+    - run: |
+        echo 'test:
+          database: circle_ruby_test
+          adapter: postgresql
+          pool: 5
+          timeout: 5000
+          username: ubuntu
+          host: localhost
+        ' > config/database.yml && \
+        bundle exec rake db:create db:schema:load
+    - run: |
+        TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings )
+        echo TESTFILES: $TESTFILES
+        # "--" is the Rspec separator between flags and the file list
+        bundle exec rspec --color \
+                          --require spec_helper \
+                          --format RspecJunitFormatter \
+                          --out /tmp/artifacts/test_results/rspec.xml \
+                          --format progress \
+                          -- \
+                          $TESTFILES
+        echo "contents" > /tmp/artifacts/test_results/some_file
+        echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
     - store_test_results:
         path: /tmp/artifacts
     - store_artifacts:
