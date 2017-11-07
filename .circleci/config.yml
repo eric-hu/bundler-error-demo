@@ -24,7 +24,7 @@ jobs:
         name: "install old bundler: workaround bundler 1.16.0 bug"
         command: |
           gem uninstall bunder
-          gem install bundler --version 1.15.4
+          gem install bundler --version 1.14.6
     - run: |
         bundle install --path=vendor/bundle
     - run: |
