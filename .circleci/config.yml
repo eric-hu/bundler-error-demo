@@ -2,10 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-    - image: justincampbell/capybara-webkit:2.3
-    - environment:
+    - image: circleci/ruby:2.4.2
+    - image: postgres:9.4.1
+      environment:
       - POSTGRES_USER=ubuntu
-      image: postgres:9.4.1
+
     environment:
       DISPLAY: :99
       RACK_ENV: test
