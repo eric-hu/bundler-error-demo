@@ -24,7 +24,7 @@ jobs:
           mkdir -p /tmp/artifacts/test_results
     - run:
         command: |
-          bundle install
+          bundle install --path=vendor/bundle
         shell: /bin/bash
     - run:
         command: |
