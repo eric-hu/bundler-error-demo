@@ -20,6 +20,11 @@ jobs:
         sudo apt-get install -y qt5-default libqt5webkit5-dev \
           gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
         mkdir -p /tmp/artifacts/test_results
+    - run:
+        name: "install old bundler: workaround bundler 1.16.0 bug"
+        command: |
+          gem uninstall bunder
+          gem install bundler --version 1.15.4
     - run: |
         bundle install --path=vendor/bundle
     - run: |
