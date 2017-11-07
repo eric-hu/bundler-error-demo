@@ -16,10 +16,6 @@ jobs:
     steps:
     - checkout: {}
     - run:
-        background: true
-        command: Xvfb :99 -screen 0 1280x1024x24
-        name: Starting Xvfb (for Webkit)
-    - run:
         command: |
           sudo apt-get update
           sudo apt-get install -y qt5-default libqt5webkit5-dev \
