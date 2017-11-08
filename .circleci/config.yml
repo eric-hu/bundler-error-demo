@@ -23,7 +23,8 @@ jobs:
     - run:
         name: "install new rubygems: workaround bundler 1.16.0 bug"
         command: |
-          gem update --system
+          sudo gem update --system
+          sudo gem install rake --version 1.12.1
     - run: |
         bundle install --path=vendor/bundle
     - run: |
