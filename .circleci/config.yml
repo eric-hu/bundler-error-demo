@@ -23,7 +23,7 @@ jobs:
     - run:
         name: "install new rubygems: workaround bundler 1.16.0 bug"
         command: |
-          sudo gem uninstall bundler --force
+          sudo gem uninstall bundler --executables
           sudo gem update --system
     - run: |
         bundle install --path=vendor/bundle
