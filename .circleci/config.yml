@@ -24,7 +24,7 @@ jobs:
         name: "install new rubygems: workaround bundler 1.16.0 bug"
         command: |
           sudo gem update --system
-          sudo gem install bundler -x
+          sudo gem install bundler --force
     - run: |
         bundle install --path=vendor/bundle
     - run: |
