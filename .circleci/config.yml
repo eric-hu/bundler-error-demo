@@ -2,7 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-    #- image: circleci/ruby:2.4.2-node-browsers
+    # Attempt to pull untagged image built from DockerHub CI:
+    # https://doi-janky.infosiftr.net/job/multiarch/job/amd64/job/ruby/lastBuild/console
     - image: ruby:2.4.1
     - image: postgres:9.4.1
       environment:
@@ -21,7 +22,7 @@ jobs:
         command: |
           apt-get update
           apt-get install -y qt5-default libqt5webkit5-dev \
-            gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+            gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x xvfb
 
           curl -sL https://deb.nodesource.com/setup_8.x | bash -
           apt-get install -y nodejs
