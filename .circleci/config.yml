@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
     #- image: circleci/ruby:2.4.2-node-browsers
-    - image: _/ruby:2.4.2
+    - image: ruby:2.4.2
     - image: postgres:9.4.1
       environment:
       - POSTGRES_USER=ubuntu
