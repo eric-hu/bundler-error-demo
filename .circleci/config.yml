@@ -21,12 +21,13 @@ jobs:
         name: Fetch dockerfile and build image
         command: |
           wget https://github.com/docker-library/ruby/raw/73d3ed6b06738a7457a24fba9024cad303829c0a/2.4/jessie/Dockerfile
-          docker build . --tag test_image
+          docker build . --tag $IMAGE_NAME
     - run:
         name: Push docker image
         command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-            docker push ericcircleci/$IMAGE_NAME:$CIRCLE_SHA1
+          docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          docker push $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
 
   build_and_test_app:
     working_directory: /app
