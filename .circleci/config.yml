@@ -1,18 +1,61 @@
 version: 2
 jobs:
-  build:
-    docker:
+  build_test_image:
     working_directory: /app
+    environment:
+      - IMAGE_NAME: test_image
+
     docker:
       - image: docker:17.05.0-ce-git
 
     executor: docker
+    steps:
+    - setup_remote_docker
+    - run:
+        name: install dependencies to fetch Dockerfile
+        command: |
+          apk update
+          apk add openssl
+          mkdir -p /tmp
+    - run:
+        name: Fetch dockerfile and build image
+        command: |
+          wget https://github.com/docker-library/ruby/raw/73d3ed6b06738a7457a24fba9024cad303829c0a/2.4/jessie/Dockerfile
+          docker build . --tag test_image
+    - run:
+        name: Push docker image
+        command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker push ericcircleci/$IMAGE_NAME:$CIRCLE_SHA1
+
+  build_and_test_app:
+    working_directory: /app
+    docker:
+      - image: ericcircleci/test_image:$CIRCLE_SHA1
+      - image: postgres:9.4.1
     parallelism: 2
     steps:
-    - checkout: {}
-    - setup_remote_docker
+      - checkout
+      - run: ls
 
-    #- image: ruby@sha256:be3fcbbf72e79cbbb450b6da6ff905bce6837c8ad4924b98401ea82f140ba482
+workflows:
+  version: 2
+  build_image_and_test_app:
+    jobs:
+      - build_test_image
+      - build_and_test_app:
+          requires:
+            - build_test_image
+
+
+
+
+#docker create -v /app --name app_container alpine:3.4
+#docker cp /app/. app_container:/app
+#docker run --interactive --volumes-from app_container test_image ls app
+
+
+#- image: ruby@sha256:be3fcbbf72e79cbbb450b6da6ff905bce6837c8ad4924b98401ea82f140ba482
     #- image: postgres:9.4.1
       #environment:
       #- POSTGRES_USER=ubuntu
