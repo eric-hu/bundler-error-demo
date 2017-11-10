@@ -16,14 +16,22 @@ jobs:
     parallelism: 2
     steps:
     - checkout: {}
-    - run: |
-        apt-get update
-        apt-get install -y qt5-default libqt5webkit5-dev \
-          gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+    - run:
+        name: Install system dependencies
+        command: |
+          apt-get update
+          apt-get install -y qt5-default libqt5webkit5-dev \
+            gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+
+          curl -sL https://deb.nodesource.com/setup_8.x | bash -
+          apt-get install -y nodejs
+
+          mkdir -p /tmp/artifacts/test_results
+    #- run: |
         #sudo apt-get update
         #sudo apt-get install -y qt5-default libqt5webkit5-dev \
           #gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
-        mkdir -p /tmp/artifacts/test_results
+        #mkdir -p /tmp/artifacts/test_results
     - run:
         name: "check pre-instaslled rubygems and bundler versions"
         command: |
