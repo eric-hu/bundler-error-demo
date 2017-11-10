@@ -10,34 +10,99 @@ jobs:
 
     executor: docker
     steps:
-    - setup_remote_docker
-    - run:
-        name: install dependencies to fetch Dockerfile
-        command: |
-          apk update
-          apk add openssl
-          mkdir -p /tmp
-    - run:
-        name: Fetch dockerfile and build image
-        command: |
-          wget https://github.com/docker-library/ruby/raw/73d3ed6b06738a7457a24fba9024cad303829c0a/2.4/jessie/Dockerfile
-          docker build . --tag $IMAGE_NAME
-    - run:
-        name: Push docker image
-        command: |
-          docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-          docker push $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
+      - setup_remote_docker
+      - run:
+          name: install dependencies to fetch Dockerfile
+          command: |
+            apk update
+            apk add openssl
+            mkdir -p /tmp
+      - run:
+          name: Fetch dockerfile and build image
+          command: |
+            wget https://github.com/docker-library/ruby/raw/73d3ed6b06738a7457a24fba9024cad303829c0a/2.4/jessie/Dockerfile
+            docker build . --tag $IMAGE_NAME
+      - run:
+          name: Push docker image
+          command: |
+            docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+            docker push $DOCKER_USER/$IMAGE_NAME:$CIRCLE_SHA1
 
   build_and_test_app:
     working_directory: /app
     docker:
       - image: ericcircleci/test_image:$CIRCLE_SHA1
       - image: postgres:9.4.1
+        environment:
+        - POSTGRES_USER=ubuntu
     parallelism: 2
+    environment:
+      DISPLAY: :99
+      RACK_ENV: test
     steps:
       - checkout
-      - run: ls
+      - run:
+          name: Install system dependencies
+          command: |
+            apt-get update
+            apt-get install -y qt5-default libqt5webkit5-dev \
+              gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x xvfb
+
+            curl -sL https://deb.nodesource.com/setup_8.x | bash -
+            apt-get install -y nodejs
+
+            mkdir -p /tmp/artifacts/test_results
+
+      - run:
+          name: Start Xvfb
+          background: true
+          command: |
+            Xvfb :99 -screen 0 1280x1024x24
+
+      - run:
+          name: "check pre-instaslled rubygems and bundler versions"
+          command: |
+            gem --version
+            bundle --version
+      #- run:
+          #name: "install new rubygems: workaround bundler 1.16.0 bug"
+          #command: |
+            #sudo gem uninstall bundler --executables
+            #sudo gem update --system
+      - run: |
+          bundle install --path=vendor/bundle
+      - run: |
+          echo 'test:
+            database: circle_ruby_test
+            adapter: postgresql
+            pool: 5
+            timeout: 5000
+            username: ubuntu
+            host: localhost
+          ' > config/database.yml && \
+          bundle exec rake db:create db:schema:load
+      - run: |
+          TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings )
+          echo TESTFILES: $TESTFILES
+          # "--" is the Rspec separator between flags and the file list
+          bundle exec rspec --color \
+                            --require spec_helper \
+                            --format RspecJunitFormatter \
+                            --out /tmp/artifacts/test_results/rspec.xml \
+                            --format progress \
+                            -- \
+                            $TESTFILES
+          echo "contents" > /tmp/artifacts/test_results/some_file
+          echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
+      - run:
+          command: bundle exec rails test
+          name: run a simple rails test (minitest)
+      - store_test_results:
+          path: /tmp/artifacts
+      - store_artifacts:
+          destination: build
+          path: /tmp/artifacts
 
 workflows:
   version: 2
@@ -51,77 +116,5 @@ workflows:
 
 
 
-#docker create -v /app --name app_container alpine:3.4
-#docker cp /app/. app_container:/app
-#docker run --interactive --volumes-from app_container test_image ls app
 
 
-#- image: ruby@sha256:be3fcbbf72e79cbbb450b6da6ff905bce6837c8ad4924b98401ea82f140ba482
-    #- image: postgres:9.4.1
-      #environment:
-      #- POSTGRES_USER=ubuntu
-    #working_directory: ~/canary-rails
-    #environment:
-      #DISPLAY: :99
-      #RACK_ENV: test
-    #- run:
-        #name: Install system dependencies
-        #command: |
-          #apt-get update
-          #apt-get install -y qt5-default libqt5webkit5-dev \
-            #gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x xvfb
-
-          #curl -sL https://deb.nodesource.com/setup_8.x | bash -
-          #apt-get install -y nodejs
-
-          #mkdir -p /tmp/artifacts/test_results
-
-    #- run:
-        #name: Start Xvfb
-        #background: true
-        #command: |
-          #Xvfb :99 -screen 0 1280x1024x24
-
-    #- run:
-        #name: "check pre-instaslled rubygems and bundler versions"
-        #command: |
-          #gem --version
-          #bundle --version
-    ##- run:
-        ##name: "install new rubygems: workaround bundler 1.16.0 bug"
-        ##command: |
-          ##sudo gem uninstall bundler --executables
-          ##sudo gem update --system
-    #- run: |
-        #bundle install --path=vendor/bundle
-    #- run: |
-        #echo 'test:
-          #database: circle_ruby_test
-          #adapter: postgresql
-          #pool: 5
-          #timeout: 5000
-          #username: ubuntu
-          #host: localhost
-        #' > config/database.yml && \
-        #bundle exec rake db:create db:schema:load
-    #- run: |
-        #TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings )
-        #echo TESTFILES: $TESTFILES
-        ## "--" is the Rspec separator between flags and the file list
-        #bundle exec rspec --color \
-                          #--require spec_helper \
-                          #--format RspecJunitFormatter \
-                          #--out /tmp/artifacts/test_results/rspec.xml \
-                          #--format progress \
-                          #-- \
-                          #$TESTFILES
-        #echo "contents" > /tmp/artifacts/test_results/some_file
-        #echo "<foo/>" > /tmp/artifacts/test_results/some_xml_file.xml
-    #- run:
-        #command: bundle exec rails test
-        #name: run a simple rails test (minitest)
-    #- store_test_results:
-        #path: /tmp/artifacts
-    #- store_artifacts:
-        #destination: build
-        #path: /tmp/artifacts
