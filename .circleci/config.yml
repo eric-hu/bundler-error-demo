@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
     #- image: circleci/ruby:2.4.2-node-browsers
-    - image: ruby:2.4.2
+    - image: ruby:2.4.1
     - image: postgres:9.4.1
       environment:
       - POSTGRES_USER=ubuntu
@@ -27,11 +27,13 @@ jobs:
           apt-get install -y nodejs
 
           mkdir -p /tmp/artifacts/test_results
-    #- run: |
-        #sudo apt-get update
-        #sudo apt-get install -y qt5-default libqt5webkit5-dev \
-          #gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
-        #mkdir -p /tmp/artifacts/test_results
+
+    - run:
+        name: Start Xvfb
+        background: true
+        command: |
+          Xvfb :99 -screen 0 1280x1024x24
+
     - run:
         name: "check pre-instaslled rubygems and bundler versions"
         command: |
