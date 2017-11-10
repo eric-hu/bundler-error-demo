@@ -4,7 +4,7 @@ jobs:
     docker:
     # Attempt to pull untagged image built from DockerHub CI:
     # https://doi-janky.infosiftr.net/job/multiarch/job/amd64/job/ruby/lastBuild/console
-    - image: ruby:2.4.1
+    - image: ruby:2.4.2
     - image: postgres:9.4.1
       environment:
       - POSTGRES_USER=ubuntu
