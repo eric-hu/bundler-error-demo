@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build_and_test_app:
-    working_directory: /app
+    working_directory: ~/app
     docker:
       - image: circleci/ruby:2.4.3
       - image: postgres:9.4.1
